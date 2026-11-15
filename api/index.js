@@ -236,6 +236,7 @@ export default async function handler(req, res) {
     if (isSearchIntent(text) && process.env.SERPER_API_KEY) {
       // Search has a very short budget because Alice expects a response within 4.5 seconds.
       searchContext = await searchWeb(text, Math.min(SERPER_TIMEOUT_MS, Math.max(0, remainingMs() - 2600)));
+      console.log("SERPER_RESULT:", searchContext ? "FOUND" : "EMPTY", searchContext.length);
     }
 
     const answer = await askGemini(
