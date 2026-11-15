@@ -32,27 +32,6 @@ function aliceResponse(text, endSession = false, history = []) {
     session_state: { history }
   };
 }
-  }
-
-  return {
-    version: "1.0",
-    response: {
-      text: fitAliceText(text),
-      end_session: endSession
-    },
-    session_state: { history: shortHistory }
-  };
-}
-
-  return {
-    version: "1.0",
-    response: {
-      text: fitAliceText(text),
-      end_session: endSession
-    },
-    session_state: { history }
-  };
-}
 
 function fitAliceText(value) {
   const text = String(value ?? "")
