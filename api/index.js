@@ -21,7 +21,6 @@ const SYSTEM_PROMPT = [
 ].join(" ");
 
 
-
 function aliceResponse(text, endSession = false, history = []) {
   return {
     version: "1.0",
