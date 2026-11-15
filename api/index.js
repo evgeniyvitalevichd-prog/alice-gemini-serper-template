@@ -111,10 +111,16 @@ async function searchWeb(query, timeoutMs) {
     const answerBox = data.answerBox?.answer || data.answerBox?.snippet;
     if (answerBox) items.unshift(`Краткий ответ поисковика: ${String(answerBox).slice(0, 350)}`);
     return items.length ? items.join("\n") : "";
-  } catch (error) {
-    console.warn("Serper request did not finish in time; continuing without search.");
-    return "";
-  }
+  
+} catch (error) {
+  console.warn(
+    "Serper diagnostic:",
+    error?.name || "unknown",
+    error?.message || "no message",
+    error?.cause?.code || ""
+  );
+  return "";
+}
 }
 
 async function askGemini(text, history, searchContext, timeoutMs) {
