@@ -222,6 +222,49 @@ export default async function handler(req, res) {
   const body = req.body && typeof req.body === "object" ? req.body : {};
   const text = String(body?.request?.command || body?.request?.original_utterance || "").trim();
   const oldHistory = safeHistory(body?.state?.session?.history);
+  
+  // Постоянная память Кореша
+  const notes = Array.isArray(body?.state?.user?.notes)
+    ? body.state.user.notes
+        .filter(x => typeof x === "string")
+        .slice(-3)
+    : [];
+
+  const remember = text.match(/^запомни[,:]?\s+(.+)$/i);
+
+  if (remember) {
+    const fact = remember[1].trim().slice(0, 110);
+    const reply = aliceResponse(
+      `Запомнил, братан: ${fact}`,
+      false,
+      oldHistory
+    );
+    reply.user_state_update = {
+      notes: [...notes, fact].slice(-3)
+    };
+    return res.status(200).json(reply);
+  }
+
+  if (/^что (ты )?(помнишь|запомнил)/i.test(text)) {
+    return res.status(200).json(aliceResponse(
+      notes.length
+        ? `Помню, братан: ${notes.join("; ")}`
+        : "Пока ничего не запомнил.",
+      false,
+      oldHistory
+    ));
+  }
+
+  if (/^(забудь всё|забудь все|очисти память)/i.test(text)) {
+    const reply = aliceResponse(
+      "Всё, братан, заметки очистил.",
+      false,
+      oldHistory
+    );
+    reply.user_state_update = { notes: null };
+    return res.status(200).json(reply);
+  }
+
 
   if (!text) {
     return res.status(200).json(aliceResponse(
