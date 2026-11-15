@@ -23,17 +23,15 @@ const SYSTEM_PROMPT = [
 
 
 function aliceResponse(text, endSession = false, history = []) {
-  const shortHistory = safeHistory(history);
-
-  // Не превышаем лимит памяти сессии Яндекса
-  while (
-    shortHistory.length &&
-    Buffer.byteLength(
-      JSON.stringify({ history: shortHistory }),
-      "utf8"
-    ) > 900
-  ) {
-    shortHistory.splice(0, 2);
+  return {
+    version: "1.0",
+    response: {
+      text: fitAliceText(text),
+      end_session: endSession
+    },
+    session_state: { history }
+  };
+}
   }
 
   return {
